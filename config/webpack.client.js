@@ -5,9 +5,7 @@ const LoadablePlugin = require('@loadable/webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
-// const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
-// const safePostCssParser = require('postcss-safe-parser');
 // const TerserPlugin = require('terser-webpack-plugin');
 
 const environment = require('./environment');
@@ -211,12 +209,6 @@ module.exports = function () {
         `...`,
         new CssMinimizerPlugin(),
       ],
-      runtimeChunk: {
-        name: (entrypoint) => `runtime~${entrypoint.name}`,
-      },
-      splitChunks: {
-        chunks: 'all',
-      },
     };
   }
   return config;
