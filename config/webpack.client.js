@@ -209,6 +209,10 @@ module.exports = function () {
         `...`,
         new CssMinimizerPlugin(),
       ],
+      runtimeChunk: true,
+      splitChunks: {
+        chunks: 'all',
+      },
     };
   }
   return config;
