@@ -17,7 +17,7 @@ import morgan from 'morgan';
  */
 import { renderToString } from 'react-dom/server';
 import { StaticRouter } from 'react-router-dom/server';
-import { Helmet } from 'react-helmet';
+import { HelmetProvider, FilledContext } from 'react-helmet-async';
 import { ChunkExtractor, ChunkExtractorManager } from '@loadable/server';
 
 import apiRoutes from './routes/api';
@@ -26,6 +26,7 @@ import App from 'client/App';
 const isDevelopment = process.env.NODE_ENV === 'development';
 const app = express();
 
+app.disable('x-powered-by');
 app.set('trust proxy', true);
 //  app.use(helmet());
 app.use(compression());
@@ -59,32 +60,37 @@ app.get('/*', function (req, res) {
     publicPath: process.env.PUBLIC_PATH,
     statsFile: path.resolve('build/static/loadable-stats.json'),
   });
-  // const context = {};
+  const helmetContext = {};
   const view = renderToString(
     <ChunkExtractorManager extractor={extractor}>
       <StaticRouter location={req.url}>
-        <App />
+        <HelmetProvider context={helmetContext}>
+          <App />
+        </HelmetProvider>
       </StaticRouter>
     </ChunkExtractorManager>
   );
-  const { htmlAttributes, title, meta, link, bodyAttributes } =
-    Helmet.renderStatic();
+  const { helmet } = helmetContext as FilledContext;
   const html = htmlTemplate`
      <!doctype html>
-     <html ${htmlAttributes.toString()}>
+     <html ${helmet.htmlAttributes.toString()}>
        <head>
          <meta charset="utf-8" />
-         ${title.toString()}
+         ${helmet.title.toString()}
          <meta name="viewport" content="width=device-width, initial-scale=1" />
-         ${meta.toString()}
-         ${link.toString()}
+         ${helmet.priority.toString()}
+         ${helmet.meta.toString()}
+         ${helmet.link.toString()}
+         ${helmet.style.toString()}
          ${extractor.getLinkTags()}
          ${extractor.getStyleTags()}
        </head>
-       <body ${bodyAttributes.toString()}>
+       <body ${helmet.bodyAttributes.toString()}>
          <noscript>You need to enable JavaScript to run this app.</noscript>
+         ${helmet.noscript.toString()}
          <main id="root">${view}</main>
          ${extractor.getScriptTags()}
+         ${helmet.script.toString()}
        </body>
      </html>
    `;
