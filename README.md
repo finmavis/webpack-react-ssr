@@ -14,7 +14,7 @@ This project has out-of-the-box support for the following things:
   - [ ] Jest
   - [ ] React Testing Library
   - [ ] React i18next for multi language support
-  - ✅ Server Side Rendering with Express
+  - [x] Server Side Rendering with Express
   - [x] React Fast Refresh
   - [x] CSS Modules
   - [x] PostCSS
